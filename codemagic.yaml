@@ -1,0 +1,90 @@
+workflows:
+  ios-workflow:
+    name: iOS Build & Publish
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      node: 20
+      xcode: latest
+      cocoapods: default
+      groups:
+        - ios_credentials
+      vars:
+        BUNDLE_ID: "app.lovable.04176911e55d41c6b652a9d09a348666"
+        APP_NAME: "ZAGROSS EXPRESS"
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm ci
+      - name: Build web app
+        script: |
+          npm run build
+      - name: Add iOS platform
+        script: |
+          npx cap add ios || true
+      - name: Sync Capacitor
+        script: |
+          npx cap sync ios
+      - name: Update iOS project settings
+        script: |
+          cd ios/App
+          # Update deployment target if needed
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' App.xcodeproj/project.pbxproj || true
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios/App && pod install --repo-update
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+      - name: Build iOS app
+        script: |
+          xcode-project build-ipa \
+            --workspace ios/App/App.xcworkspace \
+            --scheme App \
+            --archive-flags="-destination 'generic/platform=iOS'"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testers
+
+  android-workflow:
+    name: Android Build & Publish
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      node: 20
+      java: 17
+      groups:
+        - android_credentials
+      vars:
+        BUNDLE_ID: "app.lovable.04176911e55d41c6b652a9d09a348666"
+        APP_NAME: "ZAGROSS EXPRESS"
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm ci
+      - name: Build web app
+        script: |
+          npm run build
+      - name: Add Android platform
+        script: |
+          npx cap add android || true
+      - name: Sync Capacitor
+        script: |
+          npx cap sync android
+      - name: Build Android APK/AAB
+        script: |
+          cd android && ./gradlew bundleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.aab
+      - android/app/build/outputs/**/*.apk
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal

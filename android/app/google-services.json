@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "761029573064",
+    "project_id": "zagrossexpress-a4b46",
+    "storage_bucket": "zagrossexpress-a4b46.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761029573064:android:f245182f234a61b56f68fd",
+        "android_client_info": {
+          "package_name": "com.zagrosexpress.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLC7IoWU0-9AHp4pR7WdlP5YUGRFy3VNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761029573064:android:e5d4014ac835cb7e6f68fd",
+        "android_client_info": {
+          "package_name": "om.zagrossexpress.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLC7IoWU0-9AHp4pR7WdlP5YUGRFy3VNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
